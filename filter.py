@@ -8,13 +8,13 @@ def filter_consistent_view_user(df) :
   '''
   
   # Menentukan minimal view untuk filtering
-  cons_min_view = 2
+  cons_min_view = 3
   
   # Hitung berapa jumlah view yang dilakukan tiap user ke tiap item
   cons_view_user = df.groupby(['userid','itemid']).count().reset_index()
   
   # Filter user yang memenuhi minimal jumlah view
-  bool_cons_user = cons_view_user['rating'] >= cons_min_view
+  bool_cons_user = cons_view_user['event'] >= cons_min_view
   filter_cons_user = list(cons_view_user[bool_cons_user]['userid'].unique())
   
   # Filter datasetnya
@@ -36,19 +36,19 @@ def filter_event_maksimal(df) :
    - df (Pandas.DataFrame) : Dataset yang digunakan untuk modelling
   '''
   
-  ### Buat mapping untuk mengganti value rating buat filtering
-  ### Buat mapping untuk mengganti value rating kembali ke semula
-  map_rating = {'view':1, 'addtocart':2, 'transaction':3}
-  map_rating_inv = {u:i for i,u in map_rating.items()}
+  ### Buat mapping untuk mengganti value event buat filtering
+  ### Buat mapping untuk mengganti value event kembali ke semula
+  map_event = {'view':1, 'addtocart':2, 'transaction':3}
+  map_event_inv = {u:i for i,u in map_event.items()}
   
-  # Ganti nilai rating pada dataset sesuai dengan mapping
-  df['rating'] = df['rating'].replace(map_rating)
+  # Ganti nilai event pada dataset sesuai dengan mapping
+  df['event'] = df['event'].replace(map_event)
   
-  # Simpan rating maksimum dari datasetnya 
-  df = df.groupby(['userid','itemid'], sort=False)['rating'].max().reset_index()
+  # Simpan event maksimum dari datasetnya 
+  df = df.groupby(['userid','itemid'], sort=False)['event'].max().reset_index()
   
-  # Ganti lagi nilai rating menjadi seperti semula
-  df['rating'] = df['rating'].replace(map_rating_inv)
+  # Ganti lagi nilai event menjadi seperti semula
+  df['event'] = df['event'].replace(map_event_inv)
   
   # Tampilkan informasi tentang dataset setelah filtering
   print('Besar dataset setelah filter event maksimal :',df.shape)
@@ -66,7 +66,7 @@ def filter_buy_item(df) :
    - df (Pandas.DataFrame) : Dataset yang digunakan untuk modelling
   '''
   ### Ambil data pembelian
-  transaction = df[df['rating']=='transaction']
+  transaction = df[df['event']=='transaction']
   
   # Ambil item yang pernah dibeli
   bool_transac = df['itemid'].isin(transaction['itemid'].unique())
@@ -89,13 +89,13 @@ def filter_min_view_user(df) :
   '''
   
   # Menentukan minimal view untuk filtering
-  min_view = 2
+  min_view = 4
   
   # Hitung berapa jumlah view yang dilakukan tiap user
   view_user = df.groupby('userid').count().reset_index()
   
   # Filter user yang memenuhi minimal jumlah view
-  bool_user = view_user['rating'] >= min_view
+  bool_user = view_user['event'] >= min_view
   filter_user = view_user[bool_user]['userid']
   
   # Filter datasetnya
