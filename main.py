@@ -1,3 +1,2 @@
-print('vinson sombong')
-print('bacod lu')
+print('vinson sombongsssss')
 print('error ga ya')
