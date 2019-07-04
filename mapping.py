@@ -1,3 +1,7 @@
+# --- Fungsi Mapping ---
+
+# Fungsi untuk melakukan mapping pada 3 event (view-addtocart-transaction)
+# Sehingga menjadi kasus binary classification
 def mapping_001(df) :
   '''
   Mapping event agar sesuai untuk modelling surprise
