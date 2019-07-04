@@ -1,5 +1,9 @@
 #  --- Fungsi Filtering ---
 
+
+# Buat Data Retail Rocket (E-Commerce)
+
+# Fungsi filter user yang memiliki preferensi yang konsisten
 def filter_consistent_view_user(df) :
   '''
   Mengambil user yang pernah melakukan sejumlah view ke item yang sama
@@ -28,7 +32,8 @@ def filter_consistent_view_user(df) :
   
   return df
 
-
+# Fungsi filter ambil event yang maksimal aja
+# Contohnya pada kasus pembelian berarti event view dan addtocartnya dibuang
 def filter_event_maksimal(df) :
   '''
   Mengambil event terakhir dari dataset untuk tiap user untuk tiap item
@@ -58,7 +63,7 @@ def filter_event_maksimal(df) :
   
   return df
   
-  
+# Fungsi filter item yang pernah dibeli saja
 def filter_buy_item(df) :
   '''
   Mengambil item yang pernah dibeli saja pada dataset
@@ -80,29 +85,29 @@ def filter_buy_item(df) :
   
   return df
   
-
-def filter_min_view_user(df) :
+# Fungsi filter user yang setidaknya melakukan sejumlah event yang ditentukan
+def filter_min_event_user(df) :
   '''
-  Mengambil user yang pernah melakukan sejumlah view yang ditentukan
+  Mengambil user yang pernah melakukan sejumlah event yang ditentukan
   Input :
    - df (Pandas.DataFrame) : Dataset yang digunakan untuk modelling
   '''
   
-  # Menentukan minimal view untuk filtering
-  min_view = 4
+  # Menentukan minimal event untuk filtering
+  min_event = 4
   
-  # Hitung berapa jumlah view yang dilakukan tiap user
-  view_user = df.groupby('userid').count().reset_index()
+  # Hitung berapa jumlah event yang dilakukan tiap user
+  event_user = df.groupby('userid').count().reset_index()
   
-  # Filter user yang memenuhi minimal jumlah view
-  bool_user = view_user['event'] >= min_view
-  filter_user = view_user[bool_user]['userid']
+  # Filter user yang memenuhi minimal jumlah event
+  bool_user = event_user['event'] >= min_event
+  filter_user = event_user[bool_user]['userid']
   
   # Filter datasetnya
   df = df[df['userid'].isin(filter_user)]
   
   # Tampilkan informasi tentang dataset setelah filtering
-  print('Besar dataset setelah filter min view user :',df.shape)
+  print('Besar dataset setelah filter min event user :',df.shape)
   print('Jumlah user unique :',len(df['userid'].unique()))
   print('Jumlah item unique :',len(df['itemid'].unique()))
   print('')
