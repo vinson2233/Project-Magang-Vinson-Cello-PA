@@ -1,6 +1,6 @@
 def cek_input(df)
 '''
-Memeriksa apakah data input memiliki 3 kolom, dengan nama kolom [userid,itemid,rating] dan tipe dari rating harus numerik
+Memeriksa apakah data input memiliki 3 kolom, dengan nama kolom [userid,itemid,event] dan tipe dari event harus string
 Input :
 	df : pandas DataFrame
 Output :
@@ -11,7 +11,7 @@ print("Jumlah observasi : {0} \n Jumlah kolom : {1}".format(df.shape[0],df.shape
 if df.shape[1]==3 :
     print('PASS - Dimensi dataframe sesuai')
 else :
-    print('FAILURE - Pastikan data terdiri dari 3 kolom yakni userid,itemid,rating')
+    print('FAILURE - Pastikan data terdiri dari 3 kolom yakni userid,itemid,event')
     boole = False
 print("\n")
 
@@ -19,18 +19,18 @@ print("\n")
 if boole:
     print("Nama kolom di dataset : ",end = ' ')
     print(list(df.columns))
-    if boole and sum(df.columns==["userid","itemid","rating"])==3 :
+    if boole and sum(df.columns==["userid","itemid","event"])==3 :
         print('PASS - Nama kolom sesuai')
     else :
-        print('FAILURE - Pastikan nama kolom secara berurut adalah userid,itemid,rating')
+        print('FAILURE - Pastikan nama kolom secara berurut adalah userid,itemid,event')
         boole = False
     print("\n")
     if boole:
-        #Memeriksa tipe rating
-        if df.iloc[:,2].dtype != 'O':
-            print('PASS - Data kolom ketiga(rating) sudah numerik')
+        #Memeriksa tipe event
+        if df.iloc[:,2].dtype == 'O':
+            print('PASS - Data kolom ketiga(event) sudah tepat')
         else :
-            print("FAILURE - Data kolom ketiga merupakan String atau bukan integer, harap koreksi")
+            print("FAILURE - Data kolom masih numerik, harap koreksi")
             boole = False
 return boole
 
@@ -69,5 +69,3 @@ hasil = pd.DataFrame{"Algoritma":list_algo,"Test_AUC":list_AUC,"Runtime":list_ti
 hasil.sort_values("Test_AUC",ascending=False,inplace=True)
 best_algo = hasil.iloc[0,1]
 return hasil,best_algo
-
-
