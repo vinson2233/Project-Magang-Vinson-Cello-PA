@@ -4,7 +4,7 @@ Memeriksa apakah data input memiliki 3 kolom, dengan nama kolom [userid,itemid,r
 Input :
 	df : pandas DataFrame
 Output :
-	boolean
+	boolean yang menyatakan apakah data sudah memenuhi kriteria diatas
 '''
 #Memeriksa dimensi data
 print("Jumlah observasi : {0} \n Jumlah kolom : {1}".format(df.shape[0],df.shape[1]))
@@ -34,7 +34,40 @@ if boole:
             boole = False
 return boole
 
+def describe_data(df)
+'''
+Menanmpilkan karakteristik tentang dataset yang ingin dimodelkan
+Input : df(Pandas Data Frame)
+Output : -
+'''
+
 def filter(df)
 
-
 def create_model_specific(df,algo)
+'''
+Untuk KNNBasic aja dulu
+Fungsi untuk mencari base model terbaik dari pilihan pilihan algoritma
+Input :
+	df(Pandas DataFrame) : Dataframe yang ingin dimodelkan
+'''
+list_algo = 0 
+list_AUC  = 0
+list_time = 0
+algo_surprise = ["KNNBasic","SVD","SVDpp"]
+algo_keras = ["AutoEncoder"]
+for k in algo:
+	list_algo.append(k)
+	if k in algo_surprise :
+		auc,runtime = fit_model_surprise(df,k)
+		list_AUC.append(auc)
+		list_time.append(runtime)
+	#Belum di implementasi
+	if k in algo_lightfm : 
+		print("Algoritma belum di implementasi")
+
+hasil = pd.DataFrame{"Algoritma":list_algo,"Test_AUC":list_AUC,"Runtime":list_time}
+hasil.sort_values("Test_AUC",ascending=False,inplace=True)
+best_algo = hasil.iloc[0,1]
+return hasil,best_algo
+
+
