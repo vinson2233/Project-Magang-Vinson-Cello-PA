@@ -1,0 +1,28 @@
+Bikin Recommendation System yang lebih otomatis.
+Opsi algoritma :
+KNNWithMeans
+KNN
+
+1.cek_input(df)
+Mengecek apakah data input sudah sesuai dengan format yang diinginkan
+Input : df (Pandas DataFrame) = DataFrame yang ingin diperiksa
+Output : Boolean
+
+2.filter_data(df)
+Input : df (Pandas DataFrame) = DataFrame yang ingin diperiksa
+Output : Boolean
+
+3.create_model_specific(df,algo)
+Input : 
+  df(Pandas DataFrmae) = DataFrame yang ingin di modelkan,
+  algo(List) = daftar algoritma yang ingin digunakan 
+Output :
+  List algoritma yang telah digunakan
+  Pandas DataFrame yang isinya evaluasi dari tiap algoritma
+
+4. create_model_all(df)
+Input : 
+  df(Pandas DataFrmae) = DataFrame yang ingin di modelkan,
+Output : 
+  List algoritma yang telah digunakan
+  Pandas DataFrame yang isinya evaluasi dari tiap algoritma 
