@@ -110,3 +110,107 @@ def filter_min_view_user(df) :
   print('')
   
   return df
+
+
+#  --- Fungsi Tuning ---
+def fit_model_surprise_basic(df,k) #Untested
+	import time
+  from surprise import Reader, Dataset 
+  from surprise import KNNBasic,KNNWithMeans,SVD,SVDpp
+  from surprise.model_selection import train_test_split
+  from random import randint
+  from sklearn.metrics import roc_auc_score
+	start_time = time.time()
+
+	reader = Reader(rating_scale=(0, 1))
+	data_r = Dataset.load_from_df(data_filter[['userid', 'itemid', 'event']], reader)
+	daftar_algo = {"KNNBasicUser":KNNBasic(sim_options = {"user_based":True}),
+	               "KNNBasicItem":KNNBasic(sim_options = {"user_based":False}),
+	               "KNNWithMeanItem":KNNWithMeans(sim_options = {"user_based":False}),
+	               "KNNWithMeanUser":KNNWithMeans(sim_options = {"user_based":True}),
+	               "SVD":SVD(),
+	               "SVDnoBias":SVD(biased=False),
+	               "SVDpp":SVDpp()}
+	trainset, testset = train_test_split(data_r, test_size=0.25)
+	algo = daftar_algo[k]
+	algo.fit(trainset)
+	#Buat prediksi
+	predictions = algo.test(testset)
+	pred = pd.DataFrame(predictions)
+	pred.r_ui.replace({1.0:"transaction",0.0:"view"},inplace=True)
+	from sklearn.metrics import roc_auc_score
+	pred.r_ui.replace({"view":0,"addtocart":0,"transaction":1},inplace=True)
+	auc = roc_auc_score(pred.r_ui,pred.est)
+	end_time = time.time()
+	return auc,end_time-start_time
+
+def tune_KNNBasic(df, base) :
+  '''
+  Mencari parameter yang optimal untuk algoritma KNNBasic
+  Input :
+   - df (Pandas.DataFrame) : Dataset setelah mapping surprise
+   - base (boolean) : Bool menentukan user based atau tidak
+  Output :
+   - best_algo (Model KNNBasic) : Model dengan parameter terbaik yang didapat dari grid search
+  '''
+  
+  ### Potensi parameter 
+  n_model = 5 # Menentukan jumlah model yang dibuat per similarity
+  
+  # Import package yang diperlukan
+  from surprise import Reader, Dataset, KNNBasic
+  from surprise.model_selection import train_test_split
+  from random import randint
+  from sklearn.metrics import roc_auc_score
+  
+  # Mengubah dataset ke dalam format Surprise
+  reader = Reader(rating_scale=(0, 1))
+  data_r = Dataset.load_from_df(df, reader)
+  
+  # Split dataset untuk training dan evaluasi model
+  trainset, testset = train_test_split(data_r, test_size=.25)
+  
+  # Definisikan list untuk iterasi dan menyimpan value
+  sim_choice = ['msd', 'cosine', 'pearson']
+  list_sim = []
+  list_min_k = []
+  list_auc = []
+  count = 1
+  
+  # Mulai iterasi
+  for sim in sim_choice :
+    for i in range(n_model) :
+      
+      ### Nilai parameter (rangenya dapat diubah)
+      min_k = randint(5,15)
+
+      # Mulai modelling
+      algo = KNNBasic(min_k=min_k, sim_options={'name':sim, 'user_based':base}, verbose=False).fit(trainset)
+
+      # Bikin dataframe hasil prediksi
+      pred = pd.DataFrame(algo.test(testset))
+
+      # Hitung nilai roc_auc
+      auc = roc_auc_score(pred['r_ui'], pred['est'])
+
+      # Menyimpan nilai paremeter
+      list_sim.append(sim)
+      list_min_k.append(min_k)
+      list_auc.append(auc)
+      
+      # Kasihtau progress
+      print('GridSearch',count,'Selesai :',auc)
+      count = count + 1
+  
+  # Ambil parameter dengan nilai metrics terbaik
+  params = pd.DataFrame({'min_k':list_min_k, 'sim':list_sim, 'auc':list_auc})
+  params = params.sort_values('auc', ascending=False).head(1)
+  
+  # Buat model dengan parameter terbaik
+  best_algo = KNNBasic(min_k=params['min_k']
+                      ,sim_options={'name':params['sim'], 'user_based':base})
+  
+  return best_algo
+  
+  
+  
