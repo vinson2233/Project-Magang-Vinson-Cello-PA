@@ -1,3 +1,4 @@
+
 def cek_input(df)
 '''
 Memeriksa apakah data input memiliki 3 kolom, dengan nama kolom [userid,itemid,event] dan tipe dari event harus string
@@ -41,9 +42,10 @@ Input : df(Pandas Data Frame)
 Output : -
 '''
 
+
 def filter(df)
 
-def create_model_specific(df,algo)
+def search_model_specific(df,algo)
 '''
 Untuk KNNBasic aja dulu
 Fungsi untuk mencari base model terbaik dari pilihan pilihan algoritma
@@ -53,12 +55,12 @@ Input :
 list_algo = 0 
 list_AUC  = 0
 list_time = 0
-algo_surprise = ["KNNBasic","SVD","SVDpp"]
+algo_surprise = ["KNNBasicUser","KNNBasicItem","KNNWithMeanItem","KNNWithMeanUser","SVD","SVDnoBias","SVDpp"]
 algo_keras = ["AutoEncoder"]
 for k in algo:
 	list_algo.append(k)
 	if k in algo_surprise :
-		auc,runtime = fit_model_surprise(df,k)
+		auc,runtime = fit_model_surprise_basic(df,k)
 		list_AUC.append(auc)
 		list_time.append(runtime)
 	#Belum di implementasi
