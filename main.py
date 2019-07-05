@@ -101,3 +101,11 @@ def search_model_specific(df,algo) :
   return hasil,best_algo
 
 # Fungsi buat ngetuning
+def tuning(df, algo) :
+  dict_algo = {'KNNBasicUser':tune_KNNBasic(df, True)
+              ,'KNNBasicItem':tune_KNNBasic(df, False)
+              ,'KNNWithMeansUser':tune_KNNWithMeans(df, True)
+              ,'KNNWithMeansItem':tune_KNNWithMeans(df, False)
+              ,'SVD':tune_SVD(df, True)
+              ,'SVDnoBias':tune_SVD(df, False)
+              ,'SVDpp':tune_SVDpp(df)}
