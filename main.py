@@ -102,6 +102,16 @@ def search_model_specific(df,algo) :
 
 # Fungsi buat ngetuning
 def tuning(df, algo) :
+  '''
+  Melakukan tuning parameter untuk algoritma yang dipilih
+  Input :
+   - df (Pandas.DataFrame) : Dataset yang digunakan untuk modelling
+   - algo (string) : Model yang akan dituning
+  Output :
+   - best_algo (Model) : Model dengan parameter yang sudah dituning
+  '''
+  
+  # List algoritma tuning sesuai dengan model
   dict_algo = {'KNNBasicUser':tune_KNNBasic(df, True)
               ,'KNNBasicItem':tune_KNNBasic(df, False)
               ,'KNNWithMeansUser':tune_KNNWithMeans(df, True)
@@ -109,3 +119,8 @@ def tuning(df, algo) :
               ,'SVD':tune_SVD(df, True)
               ,'SVDnoBias':tune_SVD(df, False)
               ,'SVDpp':tune_SVDpp(df)}
+  
+  # Melakukan tuning parameter
+  best_algo = dict_algo[algo]
+  
+  return best_algo
