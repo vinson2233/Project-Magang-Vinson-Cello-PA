@@ -100,3 +100,5 @@ def search_model_specific(df,algo) :
   best_algo = hasil.iloc[0,1]
   
   return hasil,best_algo
+
+# Fungsi buat ngetuning
