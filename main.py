@@ -45,6 +45,15 @@ def describe_data(df) :
   Input : df(Pandas Data Frame)
   Output : -
   '''
+  temp = df.rating.value_counts()
+  maximum= temp.max()
+  minimum= temp.min()
+
+  print("Jumlah user yang telah melakukan transaksi adalah {0} atau {1}% dari data".format(minimum,np.round(minimum/data.shape[0],3)))
+  print("Jumlah user yang tidak melakukan transaksi adalah {0} atau {1}% dari data ".format(maximum,np.round(maximum/data.shape[0],3)))
+
+  print("Jumlah user unik: {0}".format(len(data.user.unique())))
+  print("Jumlah item unik: {0}".format(len(data.item.unique())))
 
 # Fungsi untuk melakukan personalized filter untuk Dataset Retail Rocket
 def filter_retailrocket(df) :
