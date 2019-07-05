@@ -57,11 +57,11 @@ def describe_data(df) :
   maximum= temp.max()
   minimum= temp.min()
 
-  print("Jumlah user yang telah melakukan transaksi adalah {0} atau {1}% dari data".format(minimum,np.round(minimum/data.shape[0],3)))
-  print("Jumlah user yang tidak melakukan transaksi adalah {0} atau {1}% dari data ".format(maximum,np.round(maximum/data.shape[0],3)))
+  print("Jumlah user yang telah melakukan transaksi adalah {0} atau {1}% dari data".format(minimum,np.round(minimum/df.shape[0],3)))
+  print("Jumlah user yang tidak melakukan transaksi adalah {0} atau {1}% dari data ".format(maximum,np.round(maximum/df.shape[0],3)))
 
-  print("Jumlah user unik: {0}".format(len(data.userid.unique())))
-  print("Jumlah item unik: {0}".format(len(data.itemid.unique())))
+  print("Jumlah user unik: {0}".format(len(df.userid.unique())))
+  print("Jumlah item unik: {0}".format(len(df.itemid.unique())))
 
 # Fungsi untuk melakukan personalized filter untuk Dataset Retail Rocket
 def filter_retailrocket(df) :
@@ -145,3 +145,21 @@ def tuning_model(df, algo) :
       best_algo = tuning.tune_SVDpp(df)
   
   return best_algo
+
+# Fungsi fitting model
+def fitting_model_surprise(df, algo) :
+    
+    from surprise import Dataset, Reader
+    from surprise.model_selection import train_test_split
+    # Mengubah dataset ke dalam format Surprise
+    reader = Reader(rating_scale=(0, 1))
+    data_r = Dataset.load_from_df(df, reader)
+    
+    # Buat dataset full
+    # Split dataset untuk training dan evaluasi model
+    trainset, testset = train_test_split(data_r, test_size=.000000001)
+    
+    # Fitting best model
+    algo.train(trainset)
+    
+    return algo

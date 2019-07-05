@@ -62,7 +62,7 @@ def tune_KNNBasic(df, base) :
   
   # Ambil parameter dengan nilai metrics terbaik
   params = pd.DataFrame({'min_k':list_min_k, 'sim':list_sim, 'auc':list_auc})
-  params = params.sort_values('auc', ascending=False).head(1)
+  params = params.sort_values('auc', ascending=False).iloc[0]
   
   # Buat model dengan parameter terbaik
   best_algo = KNNBasic(min_k=params['min_k']
@@ -132,7 +132,7 @@ def tune_KNNWithMeans(df, base) :
   
   # Ambil parameter dengan nilai metrics terbaik
   params = pd.DataFrame({'min_k':list_min_k, 'sim':list_sim, 'auc':list_auc})
-  params = params.sort_values('auc', ascending=False).head(1)
+  params = params.sort_values('auc', ascending=False).iloc[0]
   
   # Buat model dengan parameter terbaik
   best_algo = KNNWithMeans(min_k=params['min_k']
@@ -209,7 +209,7 @@ def tune_SVD(df, bias) :
   # Ambil parameter dengan nilai metrics terbaik
   params = pd.DataFrame({'n_factors':list_n_factors, 'n_epochs':list_epochs, 'lr':list_lr
                         ,'reg':list_reg, 'auc':list_auc})
-  params = params.sort_values('auc', ascending=False).head(1)
+  params = params.sort_values('auc', ascending=False).iloc[0]
   
   # Buat model dengan parameter terbaik
   best_algo = SVD(n_factors=params['n_factors'], n_epochs=params['n_epochs']
@@ -287,10 +287,11 @@ def tune_SVDpp(df) :
   # Ambil parameter dengan nilai metrics terbaik
   params = pd.DataFrame({'n_factors':list_n_factors, 'n_epochs':list_epochs, 'lr':list_lr
                         ,'reg':list_reg, 'auc':list_auc})
-  params = params.sort_values('auc', ascending=False).head(1)
+  params = params.sort_values('auc', ascending=False).iloc[0]
   
   # Buat model dengan parameter terbaik
   best_algo = SVDpp(n_factors=params['n_factors'], n_epochs=params['n_epochs']
                  ,lr_all=params['lr'], reg_all=params['reg'], verbose=False)
   
   return best_algo
+    
