@@ -146,6 +146,7 @@ def tuning_model(df, algo) :
   
   return best_algo
 
+
 # Fungsi fitting model
 def fitting_model_surprise(df, algo) :
     
@@ -157,9 +158,9 @@ def fitting_model_surprise(df, algo) :
     
     # Buat dataset full
     # Split dataset untuk training dan evaluasi model
-    trainset, testset = train_test_split(data_r, test_size=.000000001)
+    data_ra = data_r.build_full_trainset()
     
     # Fitting best model
-    algo.train(trainset)
+    algo.train(data_ra)
     
     return algo
