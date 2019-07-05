@@ -33,15 +33,25 @@ if boole:
         else :
             print("FAILURE - Data kolom masih numerik, harap koreksi")
             boole = False
+if boole:
+	print("Data sudah siap untuk dimodelkan")
+else :
+	print("Data harap diperbaiki")
 return boole
 
-def describe_data(df)
+def describe_data(df,verbose)
 '''
 Menanmpilkan karakteristik tentang dataset yang ingin dimodelkan
 Input : df(Pandas Data Frame)
 Output : -
 '''
-
+	if verbose:
+		print("Pastikan data sudah memenuhi kriteria fungsi cek_input")
+	print(df.head())
+	print("Jumlah user : {0}".format(df.shape[0]))
+	print("Jumlah user unik : {0} \n Jumlah item unik : {1}".format(len(df.userid.unique),len(df.itemid.unique)))
+	
+	print("Dari dataset, terdapat {0}%")
 
 def filter(df)
 
