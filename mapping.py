@@ -1,6 +1,10 @@
+# --- Fungsi Mapping ---
+
+# Fungsi untuk melakukan mapping pada 3 event (view-addtocart-transaction)
+# Sehingga menjadi kasus binary classification
 def mapping_001(df) :
   '''
-  Mapping rating agar sesuai untuk modelling surprise
+  Mapping event agar sesuai untuk modelling surprise
   Digunakan pada dataset Retail Rocket
   Input :
    - df (Pandas.DataFrame) : Dataset yang digunakan untuk modelling
@@ -10,7 +14,7 @@ def mapping_001(df) :
   map_001 = {'view':0, 'addtocart':0, 'transaction':1}
   
   # Lakukan mapping 
-  df['rating'] = df['rating'].replace(map_001)
+  df['event'] = df['event'].replace(map_001)
   
   # Check berhasil atau tidak
   print('Mapping 0-0-1 selesai')
