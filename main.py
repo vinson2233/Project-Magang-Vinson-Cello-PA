@@ -1,4 +1,4 @@
-
+#Apakah akan berubah
 def cek_input(df)
 '''
 Memeriksa apakah data input memiliki 3 kolom, dengan nama kolom [userid,itemid,event] dan tipe dari event harus string
