@@ -94,7 +94,7 @@ def filter_min_event_user(df) :
   '''
   
   # Menentukan minimal event untuk filtering
-  min_event = 4
+  min_event = 3
   
   # Hitung berapa jumlah event yang dilakukan tiap user
   event_user = df.groupby('userid').count().reset_index()
