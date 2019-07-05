@@ -1,3 +1,8 @@
+from filter import *
+from mapping import *
+from tuning import *
+from search import *
+
 # --- Skema utama Recommendation System ---
 
 # Fungsi untuk mengecek input apakah sudah sesuai untuk modelling
@@ -110,7 +115,7 @@ def search_model_specific(df,algo) :
   return hasil,best_algo
 
 # Fungsi buat ngetuning
-def tuning(df, algo) :
+def tuning_model(df, algo) :
   '''
   Melakukan tuning parameter untuk algoritma yang dipilih
   Input :
