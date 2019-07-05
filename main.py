@@ -18,7 +18,6 @@ def cek_input(df) :
       print('FAILURE - Pastikan data terdiri dari 3 kolom yakni userid,itemid,event')
       boole = False
   print("\n")
-
   # Memeriksa nama kolom
   if boole:
       print("Nama kolom di dataset : ",end = ' ')
