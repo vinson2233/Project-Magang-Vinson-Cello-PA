@@ -57,8 +57,8 @@ def describe_data(df) :
   maximum= temp.max()
   minimum= temp.min()
 
-  print("Jumlah user yang telah melakukan transaksi adalah {0} atau {1}% dari data".format(minimum,np.round(minimum/data.shape[0],3)))
-  print("Jumlah user yang tidak melakukan transaksi adalah {0} atau {1}% dari data ".format(maximum,np.round(maximum/data.shape[0],3)))
+  print("Jumlah user yang telah melakukan transaksi adalah {0} atau {1}% dari data".format(minimum,np.round(minimum/df.shape[0],3)))
+  print("Jumlah user yang tidak melakukan transaksi adalah {0} atau {1}% dari data ".format(maximum,np.round(maximum/df.shape[0],3)))
 
   print("Jumlah user unik: {0}".format(len(data.userid.unique())))
   print("Jumlah item unik: {0}".format(len(data.itemid.unique())))
