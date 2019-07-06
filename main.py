@@ -1,3 +1,11 @@
+import pandas as pd
+import numpy as np
+import filter
+import mapping
+import tuning
+import search
+import warnings
+warnings.filterwarnings('ignore')
 # --- Skema utama Recommendation System ---
 
 # Fungsi untuk mengecek input apakah sudah sesuai untuk modelling
@@ -9,7 +17,7 @@ def cek_input(df) :
   Output :
     boolean yang menyatakan apakah data sudah memenuhi kriteria diatas
   '''
-  
+  boole = True
   # Memeriksa dimensi data
   print("Jumlah observasi : {0} \n Jumlah kolom : {1}".format(df.shape[0],df.shape[1]))
   if df.shape[1]==3 :
@@ -45,15 +53,15 @@ def describe_data(df) :
   Input : df(Pandas Data Frame)
   Output : -
   '''
-  temp = df.rating.value_counts()
+  temp = df.event.value_counts()
   maximum= temp.max()
   minimum= temp.min()
 
-  print("Jumlah user yang telah melakukan transaksi adalah {0} atau {1}% dari data".format(minimum,np.round(minimum/data.shape[0],3)))
-  print("Jumlah user yang tidak melakukan transaksi adalah {0} atau {1}% dari data ".format(maximum,np.round(maximum/data.shape[0],3)))
+  print("Jumlah user yang telah melakukan transaksi adalah {0} atau {1}% dari data".format(minimum,np.round(minimum/df.shape[0],3)))
+  print("Jumlah user yang tidak melakukan transaksi adalah {0} atau {1}% dari data ".format(maximum,np.round(maximum/df.shape[0],3)))
 
-  print("Jumlah user unik: {0}".format(len(data.user.unique())))
-  print("Jumlah item unik: {0}".format(len(data.item.unique())))
+  print("Jumlah user unik: {0}".format(len(df.userid.unique())))
+  print("Jumlah item unik: {0}".format(len(df.itemid.unique())))
 
 # Fungsi untuk melakukan personalized filter untuk Dataset Retail Rocket
 def filter_retailrocket(df) :
@@ -65,13 +73,13 @@ def filter_retailrocket(df) :
   '''
   
   # Filtering
-  df = filter_consistent_view_user(df)
-  df = filter_event_maksimal(df)
-  df = filter_buy_item(df)
-  df = filter_min_event_user(df)
+  df = filter.filter_consistent_view_user(df)
+  df = filter.filter_event_maksimal(df)
+  df = filter.filter_buy_item(df)
+  df = filter.filter_min_event_user(df)
   
   # Mapping
-  df = mapping_surprise(df)
+  df = mapping.mapping_001(df)
   
   return df
 
@@ -85,9 +93,9 @@ def search_model_specific(df,algo) :
   '''
   
   # Definisikan list untuk membant permodelan
-  list_algo = 0 
-  list_AUC  = 0
-  list_time = 0
+  list_algo = []
+  list_AUC  = []
+  list_time = []
   algo_surprise = ["KNNBasicUser","KNNBasicItem","KNNWithMeanItem","KNNWithMeanUser","SVD","SVDnoBias","SVDpp"]
   algo_keras = ["AutoEncoder"]
   
@@ -95,22 +103,22 @@ def search_model_specific(df,algo) :
   for k in algo:
     list_algo.append(k)
     if k in algo_surprise :
-      auc,runtime = fit_model_surprise_basic(df,k)
+      auc,runtime = search.fit_model_surprise_basic(df,k)
       list_AUC.append(auc)
       list_time.append(runtime)
     #Belum di implementasi
-    if k in algo_lightfm : 
+    if k in algo_keras : 
       print("Algoritma belum di implementasi")
 
   # Membuat output    
-  hasil = pd.DataFrame{"Algoritma":list_algo,"Test_AUC":list_AUC,"Runtime":list_time}
+  hasil = pd.DataFrame({"Algoritma":list_algo,"Test_AUC":list_AUC,"Runtime":list_time})
   hasil.sort_values("Test_AUC",ascending=False,inplace=True)
-  best_algo = hasil.iloc[0,1]
+  best_algo = hasil.iloc[0,0]
   
   return hasil,best_algo
 
 # Fungsi buat ngetuning
-def tuning(df, algo) :
+def tuning_model(df, algo) :
   '''
   Melakukan tuning parameter untuk algoritma yang dipilih
   Input :
@@ -121,15 +129,38 @@ def tuning(df, algo) :
   '''
   
   # List algoritma tuning sesuai dengan model
-  dict_algo = {'KNNBasicUser':tune_KNNBasic(df, True)
-              ,'KNNBasicItem':tune_KNNBasic(df, False)
-              ,'KNNWithMeansUser':tune_KNNWithMeans(df, True)
-              ,'KNNWithMeansItem':tune_KNNWithMeans(df, False)
-              ,'SVD':tune_SVD(df, True)
-              ,'SVDnoBias':tune_SVD(df, False)
-              ,'SVDpp':tune_SVDpp(df)}
-  
-  # Melakukan tuning parameter
-  best_algo = dict_algo[algo]
+  if algo == 'KNNBasicUser' :
+      best_algo = tuning.tune_KNNBasic(df, True)
+  elif algo == 'KNNBasicItem' :
+      best_algo = tuning.tune_KNNBasic(df, False)
+  elif algo == 'KNNWithMeansUser' :
+      best_algo = tuning.tune_KNNWithMeans(df, True)
+  elif algo == 'KNNWithMeansItem' :
+      best_algo = tuning.tune_KNNWithMeans(df, False)
+  elif algo == 'SVD' :
+      best_algo = tuning.tune_SVD(df, True)
+  elif algo == 'SVDnoBias' :
+      best_algo = tuning.tune_SVD(df, False)
+  elif algo == 'SVDpp' :
+      best_algo = tuning.tune_SVDpp(df)
   
   return best_algo
+
+
+# Fungsi fitting model
+def fitting_model_surprise(df, algo) :
+    
+    from surprise import Dataset, Reader
+    from surprise.model_selection import train_test_split
+    # Mengubah dataset ke dalam format Surprise
+    reader = Reader(rating_scale=(0, 1))
+    data_r = Dataset.load_from_df(df, reader)
+    
+    # Buat dataset full
+    # Split dataset untuk training dan evaluasi model
+    data_ra = data_r.build_full_trainset()
+    
+    # Fitting best model
+    algo.train(data_ra)
+    
+    return algo
