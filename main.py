@@ -5,6 +5,7 @@ import mapping
 import tuning
 import search
 import warnings
+import rec
 warnings.filterwarnings('ignore')
 # --- Skema utama Recommendation System ---
 
