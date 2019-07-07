@@ -170,10 +170,17 @@ def tuning_model(df, algo) :
 
 
 # Fungsi fitting model
-def fitting_model_surprise(df, algo) :
+def fitting_model_surprise(df, best_algo) :
+    '''
+    Melatih model yang telah dituning sehingga siap untuk melakukan prediksi
+    Input :
+     - df (Pandas.DataFrame) : Dataset yang siap untuk modelling
+     - best_algo (Model) : Model yang telah dituning
+    '''
     
     from surprise import Dataset, Reader
     from surprise.model_selection import train_test_split
+    
     # Mengubah dataset ke dalam format Surprise
     reader = Reader(rating_scale=(0, 1))
     data_r = Dataset.load_from_df(df, reader)
@@ -183,6 +190,34 @@ def fitting_model_surprise(df, algo) :
     data_ra = data_r.build_full_trainset()
     
     # Fitting best model
-    algo.train(data_ra)
+    best_algo.train(data_ra)
     
-    return algo
+    return best_algo
+  
+
+# Fungsi memberikan rekomendasi
+def mockup_recommend(id_user, data_full, data_model, best_algo) :
+  '''
+  Fungsi untuk menampilkan hasil rekomendasi sesuai dengan jenis rekomendasinya
+  Beserta informasi singkat mengenai user yang ingin diberikan rekomendasi
+  Input :
+   - id_user (int) : User yang ingin diberikan rekomendasi
+   - data_full (Pandas.DataFrame) : Dataset original yang dimasukkan ke dalam sistem
+   - data_model (Pandas.DataFrame) : Dataset yang digunakan untuk modelling
+   - best_algo (Model) : Model yang telah dituning dan difitting
+  '''
+  
+  # Simpan semua item yang ada pada dataset modelling
+  list_item = pd.Series(data_model['itemid'].unique())
+  
+  # Ambil event transaksi dari dataset full
+  full_transac = data_full[data_full['event']=='transaction']
+  
+  # Ambil event view dari dataset full
+  # Belum tentu ada di dataset lain
+  full_view = data_full[data_full['event']=='view']
+  
+  # Tampilkan hasil rekomendasi
+  rec.hasil_recommendation(id_user, data_model, best_algo
+                       ,list_item, full_transac, full_view)
+    
