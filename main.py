@@ -83,6 +83,28 @@ def filter_retailrocket(df) :
   
   return df
 
+# Fungsi filter yang lebih general
+# Diharapkan dapat digunakan pada semua kasus Recommendation System
+def filter_general(df, N_user, N_item) :
+  '''
+  Melakukan filter dan mapping untuk mempersiapkan model
+  sehingga cocok untuk modelling
+  Menggunakan pendekatan Top N item dan user
+  Input :
+   - df (Pandas.DataFrame) : Dataset setelah dicek
+   - N_user (float, skala 0-100) = Persentase top user yang akan diambil
+   - N_item (float, skala 0-100) = Persentase top item yang akan diambil
+  '''
+  
+  # Filtering
+  df = filter.filter_top_Npct_user(df, N_user)
+  df = filter.filter_top_Npct_item(df, N_item)
+  
+  # Mapping
+  df = mapping.mapping_surprise(df)
+  
+  return df
+
 # Fungsi untuk mencari model untuk dituning dari list model yang diinginkan
 def search_model_specific(df,algo) :
   '''
