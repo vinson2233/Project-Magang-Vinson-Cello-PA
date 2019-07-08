@@ -50,10 +50,10 @@ jobs:
       - run:
           name: run tests
           type: approval
-          command: printf '1150086\n' |
-            .venv/bin/activate python program.py test
+          command: |
+            . venv/bin/activate 
+            python program.py test
             
-
       - store_artifacts:
           path: test-reports
           destination: test-reports
