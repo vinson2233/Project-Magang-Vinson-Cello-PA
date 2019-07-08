@@ -7,7 +7,7 @@ print("Execute semua kode, harap tunggu")
 
 # Mempersiapkan dataset
 data = pd.read_csv("data_cello.csv")
-data = data.iloc[:,[1,3,2]]
+data = data.iloc[:,[0,2,1]]
 data.columns = ["userid","itemid","event"]
 
 # Pisah antara dataset inputan dan dataset modelling
