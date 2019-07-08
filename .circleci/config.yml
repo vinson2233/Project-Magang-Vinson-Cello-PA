@@ -51,8 +51,7 @@ jobs:
           name: run tests
           type: approval
           command: printf '1150086\n' |
-            . venv/bin/activate
-            python program.py test
+            .venv/bin/activate python program.py test
             
 
       - store_artifacts:
