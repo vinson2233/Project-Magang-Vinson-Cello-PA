@@ -1,0 +1,4 @@
+scikit-surprise
+numpy
+pandas
+sklearn
