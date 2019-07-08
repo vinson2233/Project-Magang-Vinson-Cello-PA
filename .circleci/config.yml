@@ -40,7 +40,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "requirementsq.txt" }}
+          key: v1-dependencies-{{ checksum "requirements1.txt" }}
 
       # run tests!
       # this example uses Django's built-in test-runner
