@@ -50,7 +50,7 @@ jobs:
       - run:
           name: run tests
           type: approval
-          command: printf '1150086\n' |
+          command:  |
             .venv/bin/activate python program.py test
             
 
