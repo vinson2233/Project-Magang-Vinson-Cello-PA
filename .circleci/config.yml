@@ -34,6 +34,7 @@ jobs:
             . venv/bin/activate
             pip install --upgrade pip
             pip install --upgrade setuptools
+            pip install -I https://github.com/pypa/pip/archive/master.zip#egg=pip
             pip install -r requirements.txt
             
 
