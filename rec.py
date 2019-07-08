@@ -1,22 +1,25 @@
 # Berisi fungsi untuk melakukan rekomendasi
 
 # Fungsi untuk mengambil jumlah item dibeli 
-def count_transac_item(iid) :
+def count_transac_item(iid, full_transac) :
     '''
     Fungsi untuk mengambil jumlah transaksi item yang diinginkan
     Input 
+     - iid (int) : Item yang terkait
+     - full_transac (Pandas.DataFrame) : Dataset berisi transaksi saja
     '''
-    global full_transac
     
     count = len(full_transac[full_transac['itemid']==iid])
     return count
     
 # Fungsi untuk mengambil jumlah item dilihat
-def count_view_item(iid) :
+def count_view_item(iid, full_view) :
     '''
     Fungsi untuk mengambil jumlah view item yang diinginkan
+    Input 
+     - iid (int) : Item yang terkait
+     - full_view (Pandas.DataFrame) : Dataset berisi view saja
     '''
-    global full_view
     
     count = len(full_view[full_view['itemid']==iid])
     return count
@@ -29,7 +32,7 @@ def action_recommend(i) :
     best_threshold : Threshold untuk
     '''
     # Setting threshold
-    best_threshold = 0.4
+    best_threshold = 0.2
     
     # Tnentukan aksinya
     if i == 0 :
@@ -42,17 +45,17 @@ def action_recommend(i) :
     return action
 
 # Fungsi untuk mengeluarkan informasi tentang user
-def user_info(user) :
+def user_info(id_user, full_transac) :
     '''
     Menampilkan history transaksi yang dilakukan oleh user yang ingin diberikan rekomendasi
+    Input :
+     - id_user (int) : User yang terkait
+     - data_full (Pandas.DataFrame) : Dataset original yang dimasukkan ke dalam sistem
     '''
-    global data_full
-    N = 5
+    N = 5 # Jumlah top item yang ingin ditampilkan
     
     # Filter event transaksi saja untuk user yang diinginkan
-    # Ambil dari full_transac aja
-    event_transaction_2 = data_full[data_full['event']=='transaction']
-    dummy_2 = event_transaction_2[event_transaction_2['userid']==user]
+    dummy_2 = full_transac[full_transac['userid']==id_user]
 
     # Cari top N item beserta jumlahnya
     top_item = list(dummy_2.groupby('itemid').count()['event'].sort_values(ascending=False).index[:N]) 
@@ -64,7 +67,7 @@ def user_info(user) :
     top_N.fillna('-', inplace=True)
     
     # Print informasi tentang visitor
-    print('Informasi tentang user',user)
+    print('Informasi tentang user',id_user)
     print('Banyak transaksi yang dilakukan :',len(dummy_2))
     print('Banyak item yang telah dibeli :',len(dummy_2['itemid'].unique()))
     print('')
@@ -73,14 +76,28 @@ def user_info(user) :
     print('')
     
 # Definisikan fungsi untuk memberikan rekomendasi
-def recommend(visitor, df, algo) :
-    global list_item, df_full
+def hasil_recommendation(id_user, data_model, best_algo, list_item, full_transac, full_view) :
+    '''
+    Menampilkan hasil rekomendasi
+    Input :
+     - id_user (int) : User yang ingin diberi rekomendasi
+     - data_model (Pandas.DataFrame) : Dataset untuk modelling
+     - best_algo (Model) : Model yang sudah dituning dan difitting
+     - list_item (Pandas.Series) : List item yang ada pada dataset modelling
+     - full_transac (Pandas.DataFrame) : Dataset yang berisikan transaksi saja
+     - full_view (Pandas.DataFrame) : Datase yang berisikan view saja
+    '''
+    
+    # Tampilkan informasi tentang user
+    user_info(id_user, full_transac)
+    
+    # Berapa banyak rekomendasi yang ingin diberikan
     n_NBO = 5
     n_recommend = 10
     
     # Ambil barang yang belum pernah dibeli visitor tersebut
-    event_transaction = df[df['event']==5]
-    dummy = event_transaction[event_transaction['visitorid']==visitor]
+    event_transaction = data_model[data_model['event']==1]
+    dummy = event_transaction[event_transaction['userid']==id_user]
     bool_item = list_item.isin(dummy['itemid'].unique())
     rec_item = list_item[~bool_item]
     
@@ -95,7 +112,7 @@ def recommend(visitor, df, algo) :
     pred = []
     
     for i in rec_item :
-        pred_i = algo.predict(uid=visitor, iid=i)
+        pred_i = best_algo.predict(uid=id_user, iid=i)
         action = action_recommend(pred_i[3])
         
         if action == 'NBO' :
@@ -117,27 +134,21 @@ def recommend(visitor, df, algo) :
     pred.sort_values('est',ascending=False, inplace=True)
     
     # Merge dengan dataset Full untuk mendapat categoryid dan parentid
-    pred = pred.merge(df_full[['itemid','categoryid','parentid']], left_on='iid', right_on='itemid')
-    
-    # Rapihin dulu dataframenya
-    pred.drop(columns='itemid', inplace=True)
-    pred.drop_duplicates(subset='iid', inplace=True)
+    # pred = pred.merge(df_full[['itemid','categoryid','parentid']], left_on='iid', right_on='itemid')
     
     # Print Rekomendasi barang NBO
     NBO = pred[pred['action']=='NBO'].head(n_NBO)
-    NBO['n_beli'] = NBO.iid.apply(count_transac_item)
-    NBO['n_view'] = NBO.iid.apply(count_view_item)
+    NBO['n_beli'] = [count_transac_item(item, full_transac) for item in NBO['iid']]
+    NBO['n_view'] = [count_view_item(item, full_view) for item in NBO['iid']]
     print('Rekomendasi Barang NBO :')
-    print(NBO[['iid', 'categoryid', 'parentid', 'n_beli', 'n_view']])
+    print(NBO[['iid', 'n_beli', 'n_view']])
     print('')
     
     # Print Rekomendasi barang Recommended
     rec = pred[pred['action']=='Recommended'].head(n_recommend)
-    rec['n_beli'] = rec.iid.apply(count_transac_item)
-    rec['n_view'] = rec.iid.apply(count_view_item)
+    rec['n_beli'] = [count_transac_item(item, full_transac) for item in rec['iid']]
+    rec['n_view'] = [count_view_item(item, full_view) for item in rec['iid']]
     print('Rekomendasi Barang biasa :')
-    print(rec[['iid', 'categoryid', 'parentid', 'n_beli', 'n_view']])
+    print(rec[['iid', 'n_beli', 'n_view']])
     
     return pred
-
-
