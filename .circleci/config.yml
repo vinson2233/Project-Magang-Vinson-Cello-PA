@@ -51,9 +51,9 @@ jobs:
           name: run tests
           type: approval
           command: |
-            . venv/bin/activate python program.py test
+            . venv/bin/activate 
+            python program.py test
             
-
       - store_artifacts:
           path: test-reports
           destination: test-reports
