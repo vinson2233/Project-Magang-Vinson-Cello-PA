@@ -101,6 +101,9 @@ def filter_general(df, N_user, N_item) :
   df = filter.filter_top_Npct_user(df, N_user)
   df = filter.filter_top_Npct_item(df, N_item)
   
+  # Buang row duplikat
+  df.drop_duplicates(inplace=True)
+  
   # Mapping
   df = mapping.mapping_surprise(df)
   
