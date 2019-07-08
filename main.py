@@ -219,7 +219,7 @@ def mockup_recommend(id_user, data_full, data_model, best_algo) :
   full_view = data_full[data_full['event']=='view']
   
   # Tampilkan hasil rekomendasi
-  pred = hasil_recommendation(id_user, data_model, best_algo ,list_item, full_transac, full_view)
+  pred = rec.hasil_recommendation(id_user, data_model, best_algo ,list_item, full_transac, full_view)
   
   return pred
     
