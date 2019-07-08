@@ -1,6 +1,69 @@
 #  --- Fungsi Filtering ---
 
+# Fungi filter general top N% user
+def filter_top_Npct_user(df, N) :
+  '''
+  Mengambil top N% user di dataset berdasarkan jumlah event yang dilakukan
+  Input :
+   - df (Pandas.DataFrame) = Dataset yang akan di filter
+   - N (float, skala 0-100) = Persentase top user yang akan diambil
+  '''
+  import pandas as pd
+  import numpy as np
+  
+  # Menghitung jumlah event yang menyangkut tiap user
+  user_df = df.groupby('userid').count().reset_index().sort_values('event', ascending=False)
+  
+  # Menghitung berapa user unique di dataset
+  n_user = len(user_df['userid'].unique())
+  
+  # Mengambil top N% user
+  topNpct_user = user_df['userid'].iloc[:int(np.round(N*n_user/100))]
+  
+  # Melakukan filtering
+  bool_user = df['userid'].isin(topNpct_user)
+  df = df[bool_user]
+  
+  # Tampilkan informasi tentang dataset setelah filtering
+  print('Besar dataset setelah filter top N% user :',df.shape)
+  print('Jumlah user unique :',len(df['userid'].unique()))
+  print('Jumlah item unique :',len(df['itemid'].unique()))
+  print('')
+  
+  return df
 
+# Fungi filter general top N% item
+def filter_top_Npct_item(df, N) :
+  '''
+  Mengambil top N% item di dataset berdasarkan jumlah event yang dilakukan
+  Input :
+   - df (Pandas.DataFrame) = Dataset yang akan di filter
+   - N (float, skala 0-100) = Persentase top item yang akan diambil
+  '''
+  import pandas as pd
+  import numpy as np
+  
+  # Menghitung jumlah event yang menyangkut tiap item
+  item_df = df.groupby('itemid').count().reset_index().sort_values('event', ascending=False)
+  
+  # Menghitung berapa item unique di dataset
+  n_item = len(item_df['itemid'].unique())
+  
+  # Mengambil top N% item
+  topNpct_item = item_df['itemid'].iloc[:int(np.round(N*n_item/100))]
+  
+  # Melakukan filtering
+  bool_item = df['itemid'].isin(topNpct_item)
+  df = df[bool_item]
+  
+  # Tampilkan informasi tentang dataset setelah filtering
+  print('Besar dataset setelah filter top N% item :',df.shape)
+  print('Jumlah user unique :',len(df['userid'].unique()))
+  print('Jumlah item unique :',len(df['itemid'].unique()))
+  print('')
+  
+  return df
+  
 # Buat Data Retail Rocket (E-Commerce)
 
 # Fungsi filter user yang memiliki preferensi yang konsisten
