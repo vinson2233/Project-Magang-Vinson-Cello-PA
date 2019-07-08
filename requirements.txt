@@ -1,4 +1,4 @@
-scikit-surprise
 numpy
 pandas
 sklearn
+scikit-surprise
