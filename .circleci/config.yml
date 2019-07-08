@@ -49,6 +49,7 @@ jobs:
       # https://nose.readthedocs.io
       - run:
           name: run tests
+          type: approval
           command: |
             . venv/bin/activate
             python program.py test
