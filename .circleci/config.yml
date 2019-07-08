@@ -50,8 +50,8 @@ jobs:
       - run:
           name: run tests
           type: approval
-          command:  |
-            .venv/bin/activate python program.py test
+          command: |
+            . venv/bin/activate python program.py test
             
 
       - store_artifacts:
