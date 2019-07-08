@@ -40,7 +40,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+          key: v1-dependencies-{{ checksum "requirementsq.txt" }}
 
       # run tests!
       # this example uses Django's built-in test-runner
@@ -51,7 +51,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            python manage.py test
+            python main.py test
 
       - store_artifacts:
           path: test-reports
