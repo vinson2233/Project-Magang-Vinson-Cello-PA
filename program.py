@@ -30,9 +30,12 @@ data_model = main.filter_retailrocket(data_model)
 # Pemilihan model untuk dituning - Specific
 list_model = ['KNNBasicUser','KNNBasicItem','KNNWithMeanItem','KNNWithMeanUser','SVD','SVDnoBias','SVDpp']
 hasil_search, model_tuning = main.search_model_specific(data_model, list_model)
-
+print("Berikut hasil pencarian model terbaik dengan base configuration")
+print(hasil_search)
 # Tuning model dari hasil search
 # model = main.tuning_model(data_model, model_tuning)
+print("Berdasarkan nilai AUC, model yang akan dituning adalah {0}",model_tuning)
+
 model = main.tuning_model(data_model,"KNNWithMeansUser")
 
 # Fitting model
