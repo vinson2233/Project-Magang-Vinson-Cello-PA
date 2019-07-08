@@ -43,7 +43,7 @@ boolean = True
 while boolean:
     
     # Menerima inputan
-    input_user = int(input("Masukkan user yang ingin diprediksi : "))
+    input_user = 1150086
     pred = main.mockup_recommend(input_user, data, data_model, model)
     
     # Apakah ingin melakukan prediksi kembali ?
