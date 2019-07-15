@@ -37,6 +37,7 @@ data_model = main.filter_retailrocket(data_model)
 
 # Pemilihan model untuk dituning - Specific
 list_model = ['KNNBasicUser','KNNBasicItem','KNNWithMeanItem','KNNWithMeanUser','SVD','SVDnoBias','SVDpp']
+#list_model = ["AutoEncoder"]
 hasil_search, model_tuning = main.search_model_specific(data_model, list_model)
 print("Berikut hasil pencarian model terbaik dengan base configuration")
 print(hasil_search)
@@ -54,7 +55,7 @@ boolean = True
 while boolean:
     
     # Menerima inputan
-    input_user = 1150086
+    input_user = int(input("Masukkan user yang ingin diperiksa"))
     pred = main.mockup_recommend(input_user, data, data_model, model)
     
     # Apakah ingin melakukan prediksi kembali ?

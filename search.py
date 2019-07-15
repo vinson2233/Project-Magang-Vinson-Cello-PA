@@ -1,6 +1,6 @@
 # --- Fungsi search model untuk di tuning ---
 
-def fit_model_surprise_basic(df,k) :#Untested
+def fit_model_surprise_basic(df,k) :
   import time
   from surprise import Reader, Dataset 
   from surprise import KNNBasic,KNNWithMeans,SVD,SVDpp
@@ -30,3 +30,38 @@ def fit_model_surprise_basic(df,k) :#Untested
   end_time = time.time()
   
   return auc,end_time-start_time
+
+def fit_model_keras_basic(df,algo) :
+  import time
+  import mapping
+  from sklearn.metrics import roc_auc_score
+  import pandas as pd
+  import preprocess_keras as pk
+  import fit_autoencoder
+  start_time = time.time()
+  if algo == "AutoEncoder" :
+    #Mapping data terlebih dahulu
+    df,dict_user2idx,dict_item2idx = mapping.mapping_reset_index(df)
+    A,A_test,mask,mask_test= pk.train_test_split_sparse(df,0.8)
+    model = fit_autoencoder.fit_autoencoder(A,A_test)
+
+    a = model.predict(A_test)
+    result = pd.DataFrame(a)
+    asd = pd.melt(result.reset_index(), id_vars=['index'], value_vars=list(pd.DataFrame(a).columns))
+    mask = pd.DataFrame(mask_test.toarray())
+    csd = pd.melt(mask.reset_index(), id_vars=['index'], value_vars=list(mask.columns))
+    bool1 = csd['value'] == 1
+    asd = asd[bool1]
+    asd.columns = ['user','item','est']
+    asd.index = list(range(len(asd)))
+    test = pd.DataFrame(A_test.toarray())
+    bsd = pd.melt(test.reset_index(), id_vars=['index'], value_vars=list(pd.DataFrame(A_test.toarray()).columns))
+    bsd = bsd[bool1]
+    bsd.columns = ['user','item','aktual']
+    bsd.index = list(range(len(bsd)))
+    score = roc_auc_score(bsd.aktual,asd.est)
+  end_time = time.time()
+  return score,end_time-start_time
+
+
+
