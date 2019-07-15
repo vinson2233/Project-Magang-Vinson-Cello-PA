@@ -1,4 +1,6 @@
 # Berisi fungsi untuk melakukan rekomendasi
+import pandas as pd
+import numpy as np
 
 # Fungsi untuk mengambil jumlah item dibeli 
 def count_transac_item(iid, full_transac) :

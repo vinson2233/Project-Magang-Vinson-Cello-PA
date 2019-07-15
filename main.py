@@ -122,10 +122,11 @@ def search_model_specific(df,algo) :
   list_time = []
   algo_surprise = ["KNNBasicUser","KNNBasicItem","KNNWithMeanItem","KNNWithMeanUser","SVD","SVDnoBias","SVDpp"]
   algo_keras = ["AutoEncoder"]
-  
+  print("Algoritma yang akan digunakan adalah {0}".format(algo))
   # Mulai iterasi
   for k in algo:
     list_algo.append(k)
+    print("Sedang mengevaluasi model {0}".format(k))
     if k in algo_surprise :
       auc,runtime = search.fit_model_surprise_basic(df,k)
       list_AUC.append(auc)
@@ -133,7 +134,7 @@ def search_model_specific(df,algo) :
     #Belum di implementasi
     if k in algo_keras : 
       print("Algoritma belum di implementasi")
-
+    print("Fitting algoritma {0} telah selesai".format(k))
   # Membuat output    
   hasil = pd.DataFrame({"Algoritma":list_algo,"Test_AUC":list_AUC,"Runtime":list_time})
   hasil.sort_values("Test_AUC",ascending=False,inplace=True)
